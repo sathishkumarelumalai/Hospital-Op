@@ -1,0 +1,6 @@
+{
+  "name": "Hospital OP Load Predictor",
+  "description": "AI-powered analytical dashboard for predicting outpatient (OP) loads across departments using historical data. Features forecasting, trend analysis, and model metrics summary.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
