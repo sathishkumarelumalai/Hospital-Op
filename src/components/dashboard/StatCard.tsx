@@ -1,5 +1,6 @@
 import React from 'react';
 import { cn } from '../../lib/utils';
+import { motion } from 'motion/react';
 
 interface StatCardProps {
   label: string;
@@ -11,41 +12,48 @@ interface StatCardProps {
 
 export function StatCard({ label, value, icon, trend, description }: StatCardProps) {
   return (
-    <div className="bg-white border border-clinical-border p-6 relative overflow-hidden group transition-all hover:border-clinical-ink">
-      {/* Decorative grid background */}
-      <div className="absolute inset-0 technical-grid opacity-[0.03] pointer-events-none group-hover:opacity-[0.05] transition-opacity" />
+    <motion.div 
+      whileHover={{ y: -2 }}
+      className="hud-panel p-6 group transition-all"
+    >
+      <div className="scanline" />
       
-      <div className="relative z-10">
+      <div className="relative z-10 flex flex-col h-full">
         <div className="flex items-center justify-between mb-8">
-          <div className="p-2 border border-clinical-border rounded-sm group-hover:bg-clinical-ink group-hover:border-clinical-ink group-hover:text-white transition-all">
+          <div className="w-9 h-9 hud-border flex items-center justify-center text-hud-muted group-hover:text-hud-accent group-hover:border-hud-accent/50 transition-all duration-300">
             {icon}
           </div>
           {trend !== undefined && (
             <div className="flex flex-col items-end">
               <span className={cn(
-                "text-[10px] font-bold px-2 py-0.5 rounded-full",
-                trend > 0 ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700"
+                "font-mono text-[10px] font-bold px-2 py-0.5 hud-border",
+                trend > 0 ? "text-hud-safe border-hud-safe/20 bg-hud-safe/5" : "text-hud-alert border-hud-alert/20 bg-hud-alert/5"
               )}>
-                {trend > 0 ? '↑' : '↓'} {Math.abs(trend)}%
+                {trend > 0 ? '+' : ''}{trend}%
               </span>
-              <span className="micro-label opacity-40 mt-1">vs PREV</span>
             </div>
           )}
         </div>
 
         <div>
-          <p className="micro-label mb-2">{label}</p>
-          <p className="text-3xl font-mono tracking-tighter font-bold">{value}</p>
+          <p className="label-font mb-2">{label}</p>
+          <div className="flex items-baseline gap-2">
+            <p className="text-2xl font-mono tracking-tight font-black text-hud-ink">{value}</p>
+            <span className="text-[10px] font-mono opacity-20 uppercase tracking-widest">Units</span>
+          </div>
           {description && (
-            <p className="text-[11px] text-clinical-muted mt-4 font-medium italic opacity-60">
-              Note: {description}
-            </p>
+            <div className="mt-4 pt-4 border-t border-hud-border/50">
+              <p className="text-[9px] text-hud-muted font-mono leading-relaxed uppercase tracking-tight">
+                // {description}
+              </p>
+            </div>
           )}
         </div>
       </div>
       
-      {/* Bottom accent line */}
-      <div className="absolute bottom-0 left-0 h-0.5 bg-clinical-accent transition-all duration-300 w-0 group-hover:w-full" />
-    </div>
+      {/* Decorative corner accents */}
+      <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-hud-ink/10" />
+      <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-hud-ink/10" />
+    </motion.div>
   );
 }

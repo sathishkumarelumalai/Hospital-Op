@@ -3,10 +3,11 @@ import {
   LayoutDashboard, 
   History, 
   TrendingUp, 
-  Hospital,
   LogOut,
   Settings,
-  ShieldCheck
+  ShieldCheck,
+  Cpu,
+  Monitor
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { View } from '../../types';
@@ -18,65 +19,72 @@ interface SidebarProps {
 
 export function Sidebar({ activeView, onViewChange }: SidebarProps) {
   return (
-    <aside className="w-64 border-r border-clinical-border h-screen flex flex-col bg-white z-20">
-      <div className="p-8 border-b border-clinical-border flex items-center gap-3">
-        <div className="w-9 h-9 bg-clinical-ink rounded-sm flex items-center justify-center text-white shadow-xl rotate-3">
-          <Hospital size={20} className="-rotate-3" />
-        </div>
-        <div className="flex flex-col">
-          <span className="font-display font-black tracking-tighter text-xl italic leading-none">CarePredict</span>
-          <span className="micro-label mt-1 opacity-60">System v1.0.42</span>
+    <aside className="w-[72px] lg:w-72 border-r border-hud-border h-screen flex flex-col bg-hud-bg z-20 transition-all duration-500 ease-in-out">
+      <div className="h-20 flex items-center px-6 border-b border-hud-border">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 hud-panel flex items-center justify-center text-hud-accent shadow-[0_4px_12px_rgba(16,185,129,0.1)]">
+            <Cpu size={18} />
+          </div>
+          <div className="hidden lg:flex flex-col">
+            <span className="font-display text-[14px] font-black tracking-tight text-hud-ink uppercase italic">CarePredict_OS</span>
+            <div className="flex items-center gap-1.5">
+              <div className="indicator bg-hud-safe indicator-glow text-hud-safe" />
+              <span className="font-mono text-[8.5px] opacity-40 uppercase tracking-widest">Protocol_Active</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <nav className="flex-1 px-4 py-8 space-y-8">
-        <div className="space-y-1">
-          <p className="micro-label px-4 mb-4">Core Fleet</p>
+      <nav className="flex-1 p-3 space-y-10 mt-6">
+        <div className="space-y-1.5">
+          <p className="label-font px-4 mb-4 hidden lg:block">Vector_Array</p>
           <NavItem 
             active={activeView === 'dashboard'} 
             onClick={() => onViewChange('dashboard')}
-            icon={<LayoutDashboard size={18} />}
+            icon={<Monitor size={20} />}
             label="Overview" 
           />
           <NavItem 
             active={activeView === 'history'} 
             onClick={() => onViewChange('history')}
-            icon={<History size={18} />}
+            icon={<History size={20} />}
             label="Registry" 
           />
           <NavItem 
             active={activeView === 'forecast'} 
             onClick={() => onViewChange('forecast')}
-            icon={<TrendingUp size={18} />}
+            icon={<TrendingUp size={20} />}
             label="Predictor" 
           />
         </div>
 
-        <div className="space-y-1">
-          <p className="micro-label px-4 mb-4">Administration</p>
+        <div className="space-y-1.5">
+          <p className="label-font px-4 mb-4 hidden lg:block">System_Opt</p>
           <NavItem 
             active={false} 
             onClick={() => {}}
-            icon={<Settings size={18} />}
+            icon={<Settings size={20} />}
             label="Calibration" 
           />
           <NavItem 
             active={false} 
             onClick={() => {}}
-            icon={<ShieldCheck size={18} />}
+            icon={<ShieldCheck size={20} />}
             label="Compliance" 
           />
         </div>
       </nav>
 
-      <div className="p-6 border-t border-clinical-border">
-        <div className="flex items-center gap-3 p-3 rounded-md border border-clinical-border group cursor-pointer hover:border-clinical-ink transition-all">
-          <div className="w-8 h-8 rounded bg-clinical-border group-hover:bg-clinical-ink transition-colors" />
-          <div className="flex-1 min-w-0">
-            <p className="text-[12px] font-bold truncate tracking-tight">Dr. Adonvane</p>
-            <p className="text-[10px] text-clinical-muted truncate font-mono">STAFF_ID: 9482</p>
+      <div className="p-4 border-t border-hud-border">
+        <div className="hud-panel p-3 border-none flex items-center gap-3 group cursor-pointer hover:bg-hud-accent/5 transition-all">
+          <div className="w-8 h-8 rounded-sm bg-hud-accent/10 flex items-center justify-center text-hud-accent">
+            <span className="font-mono text-[10px] font-bold">DR</span>
           </div>
-          <LogOut size={14} className="text-clinical-muted group-hover:text-clinical-ink" />
+          <div className="hidden lg:flex flex-col flex-1 min-w-0">
+            <p className="text-[11px] font-bold truncate tracking-tight text-hud-ink uppercase">Dr_Adonvane</p>
+            <p className="text-[8px] text-hud-muted truncate font-mono uppercase">ID_042_AUTH</p>
+          </div>
+          <LogOut size={14} className="text-hud-muted group-hover:text-hud-accent transition-colors" />
         </div>
       </div>
     </aside>
@@ -88,19 +96,19 @@ function NavItem({ active, onClick, icon, label }: { active: boolean, onClick: (
     <button
       onClick={onClick}
       className={cn(
-        "w-full flex items-center gap-3 px-4 py-2.5 rounded-sm text-[13px] font-medium transition-all relative group",
+        "w-full flex items-center gap-4 px-4 py-3 border-none text-[12px] font-mono transition-all relative group",
         active 
-          ? "text-clinical-ink bg-transparent" 
-          : "text-clinical-muted hover:text-clinical-ink hover:translate-x-1"
+          ? "text-hud-accent bg-hud-accent/5 border-l-2 border-l-hud-accent" 
+          : "text-hud-muted hover:text-hud-ink hover:bg-hud-accent/5"
       )}
     >
-      {active && (
-        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 bg-clinical-accent rounded-full shadow-[0_0_8px_rgba(37,99,235,0.4)]" />
-      )}
-      <span className={cn("transition-colors", active ? "text-clinical-accent" : "opacity-40 group-hover:opacity-100")}>
+      <span className={cn("transition-all duration-300", active ? "text-hud-accent" : "opacity-50 group-hover:opacity-100")}>
         {icon}
       </span>
-      {label}
+      <span className="hidden lg:block uppercase tracking-wider">{label}</span>
+      {active && (
+        <div className="absolute right-0 w-1 h-3 bg-hud-accent shadow-[0_0_12px_#10B981]" />
+      )}
     </button>
   );
 }
