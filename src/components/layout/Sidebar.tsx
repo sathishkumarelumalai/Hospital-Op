@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   LayoutDashboard, 
   History, 
@@ -7,7 +7,8 @@ import {
   Settings,
   ShieldCheck,
   Cpu,
-  Monitor
+  Monitor,
+  Download
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { View } from '../../types';
@@ -18,6 +19,33 @@ interface SidebarProps {
 }
 
 export function Sidebar({ activeView, onViewChange }: SidebarProps) {
+  const [downloadingZip, setDownloadingZip] = useState(false);
+
+  const handleDownloadProjectZip = async () => {
+    if (downloadingZip) return;
+    setDownloadingZip(true);
+    try {
+      const response = await fetch('/api/download-project');
+      if (!response.ok) {
+        throw new Error('Failed to download archive');
+      }
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.style.display = 'none';
+      link.href = url;
+      link.download = 'carepredict-os-project.zip';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (err) {
+      console.error('Project ZIP download error:', err);
+    } finally {
+      setDownloadingZip(false);
+    }
+  };
+
   return (
     <aside className="w-[72px] lg:w-72 border-r border-hud-border h-screen flex flex-col bg-hud-bg z-20 transition-all duration-500 ease-in-out">
       <div className="h-20 flex items-center px-6 border-b border-hud-border">
@@ -71,6 +99,12 @@ export function Sidebar({ activeView, onViewChange }: SidebarProps) {
             onClick={() => {}}
             icon={<ShieldCheck size={20} />}
             label="Compliance" 
+          />
+          <NavItem
+            active={false}
+            onClick={handleDownloadProjectZip}
+            icon={<Download size={20} className={downloadingZip ? 'animate-bounce' : ''} />}
+            label={downloadingZip ? 'Packing ZIP...' : 'Download ZIP'}
           />
         </div>
       </nav>
